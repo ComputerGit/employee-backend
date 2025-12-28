@@ -1,0 +1,36 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: employee-mongo
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', 'db.runCommand({ ping: 1 })']
+      interval: 10s
+      timeout: 5s
+      retries: 2
+
+  redis:
+    image: redis:7-alpine
+    container_name: employee-redis
+    ports:
+      - '6379:6379'
+
+  backend:
+    build: .
+    image: employee-backend:1.0.0
+    container_name: employee-backend
+    restart: on-failure:2
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env.docker
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+volumes:
+  mongo_data:

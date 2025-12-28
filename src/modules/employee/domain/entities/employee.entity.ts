@@ -1,8 +1,10 @@
+// src/modules/employee/domain/entities/employee.entity.ts
 import { EmployeeId } from '../value-objects/employee-id.vo';
 import { EmployeeRole } from '../value-objects/employee-role.vo';
 import { EmployeeStatus } from '../value-objects/employee-status.enum';
 import { Name } from '../value-objects/name.vo';
 import { Address } from '../value-objects/address.vo';
+
 export class Employee {
   private constructor(
     public readonly id: EmployeeId,

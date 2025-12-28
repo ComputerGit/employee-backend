@@ -20,6 +20,40 @@ export class EmployeeMongoRepository implements EmployeeRepository {
     private readonly employeeModel: Model<EmployeeDocument>,
   ) {}
 
+  async retrieveAll(): Promise<Employee[]> {
+    // Fetch all employee documents from MongoDB
+    console.log('Starting retrieveAll... at emp-mongo-repo');
+    const employeeDocs = await this.employeeModel.find().exec();
+    console.log('Found documents:', employeeDocs.length);
+
+    // Transform each persistence model into a domain entity
+    try {
+      return employeeDocs.map((doc, index) => {
+        console.log(`Processing doc ${index}:`, doc.employeeCode);
+
+        return Employee.fromPersistence({
+          id: EmployeeId.create(doc.employeeCode),
+          name: Name.create(doc.firstName, doc.lastName, doc.middleName),
+          role: EmployeeRole.create(doc.role),
+          addresses: doc.addresses.map((addr) =>
+            Address.create({
+              type: addr.type as AddressType,
+              line1: addr.line1,
+              line2: addr.line2,
+              city: addr.city,
+              state: addr.state,
+              postalCode: addr.postalCode,
+              country: addr.country,
+            }),
+          ),
+          status: doc.status as EmployeeStatus,
+        });
+      });
+    } catch (error) {
+      console.error('Error in retrieveAll:', error);
+      throw error;
+    }
+  }
   async save(employee: Employee): Promise<Employee> {
     /* ================================
        DOMAIN → PERSISTENCE

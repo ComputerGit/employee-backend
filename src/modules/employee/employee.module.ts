@@ -13,6 +13,7 @@ import {
 } from './infrastructure/persistence/mongo/employee.schema';
 import { EmployeeIdGenerator } from './infrastructure/identity/employee-id.generator';
 import { EmployeeSequenceRepository } from './infrastructure/persistence/mongo/employee-sequence.repository';
+import { RetrieveEmployeesService } from './application/services/retrieve-employee.service';
 
 @Module({
   imports: [
@@ -24,12 +25,17 @@ import { EmployeeSequenceRepository } from './infrastructure/persistence/mongo/e
   controllers: [EmployeeController],
   providers: [
     CreateEmployeeService,
+    RetrieveEmployeesService,
     EmployeeSequenceRepository,
     EmployeeIdGenerator,
     {
       provide: 'EmployeeRepository',
       useClass: EmployeeMongoRepository,
     },
+  ],
+  exports: [
+    // Export the EmployeeRepository so other modules can use it
+    'EmployeeRepository',
   ],
 })
 export class EmployeeModule {}
