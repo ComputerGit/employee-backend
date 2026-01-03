@@ -1,13 +1,15 @@
 import session from 'express-session';
-import { RedisStore } from 'connect-redis';
+import connectRedis from 'connect-redis';
 import type Redis from 'ioredis';
 
 export function createSession(redisClient: Redis) {
+  const RedisStore = connectRedis(session); // This line creates the RedisStore class
+
   return session({
     store: new RedisStore({
-      client: redisClient as any, // Type cast to fix compatibility
+      client: redisClient as any,
       prefix: 'sess:',
-      ttl: 28800, // 8 hours in seconds
+      ttl: 28800,
     }),
     secret: process.env.SESSION_SECRET!,
     resave: false,
@@ -15,7 +17,7 @@ export function createSession(redisClient: Redis) {
     cookie: {
       httpOnly: true,
       secure: false,
-      maxAge: 1000 * 60 * 60 * 8, // 8 hours
+      maxAge: 1000 * 60 * 60 * 8,
     },
   });
 }

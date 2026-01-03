@@ -80,4 +80,16 @@ export class User {
   canLogin(): boolean {
     return this.status === UserStatus.ACTIVE;
   }
+
+  suspend(): User {
+    return new User(
+      this.id,
+      this.username,
+      this.password,
+      this.employeeId,
+      UserStatus.SUSPENDED,
+      this.createdAt,
+      this.lastLoginAt,
+    );
+  }
 }

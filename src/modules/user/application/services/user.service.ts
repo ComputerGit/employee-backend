@@ -66,4 +66,9 @@ export class UserService {
     const updatedUser = user.updateLastLogin();
     return await this.userRepository.save(updatedUser);
   }
+
+  async getEmployeeForUser(employeeId: string) {
+    const employees = await this.employeeRepository.retrieveAll();
+    return employees.find((emp) => emp.id.getValue() === employeeId);
+  }
 }

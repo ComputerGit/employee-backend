@@ -1,13 +1,18 @@
-import { Controller, Post, Body, Req } from '@nestjs/common';
+import { Controller, Post, Body, Req, Param, Delete } from '@nestjs/common';
 import type { Request } from 'express';
 import { UserService } from '../application/services/user.service';
 import { ActivateUserDto } from '../application/dto/activate-user.dto';
-import { Public } from 'src/common/decorators/roles.decorator';
+import { Public, Roles } from 'src/common/decorators/roles.decorator';
+import { DeleteUserService } from '../application/services/delete-user.service';
+import { Employee } from 'src/modules/employee/domain/entities/employee.entity';
 
 // The UserController handles user-related HTTP endpoints
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly deleteUserService: DeleteUserService,
+  ) {}
 
   // POST /user/activate
   // This is the endpoint employees hit when they're activating their account for the first time
@@ -23,10 +28,11 @@ export class UserController {
       password: dto.password,
     });
 
+    const employee = await this.userService.getEmployeeForUser(user.employeeId);
     req.session.user = {
       userId: user.id.getValue(),
       employeeId: user.employeeId,
-      role: 'EMPLOYEE',
+      role: employee ? employee.role.getValue() : 'EMPLOYEE',
     };
 
     console.log('🔍 Session after setting user:', req.session);
@@ -50,5 +56,11 @@ export class UserController {
       userId: user.id.getValue(),
       employeeId: user.employeeId,
     };
+  }
+
+  @Roles('ADMIN')
+  @Delete(':employeeId')
+  async deleteUser(@Param('employeeId') employeeId: string) {
+    return this.deleteUserService.execute(employeeId);
   }
 }

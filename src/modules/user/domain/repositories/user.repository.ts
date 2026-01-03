@@ -7,4 +7,5 @@ export interface UserRepository {
   findByUsername(username: string): Promise<User | null>;
   findByEmployeeId(employeeId: string): Promise<User | null>;
   existsByEmployeeId(employeeId: string): Promise<boolean>;
+  deleteByUserId(employeeId: string): Promise<boolean>;
 }

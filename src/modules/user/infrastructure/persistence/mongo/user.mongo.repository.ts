@@ -14,6 +14,11 @@ export class UserMongoRepository implements UserRepository {
     private readonly userModel: Model<UserDocument>,
   ) {}
 
+  async deleteByUserId(employeeId: string): Promise<boolean> {
+    const result = await this.userModel.deleteOne({ employeeId }).exec();
+    return result.deletedCount > 0;
+  }
+
   async save(user: User): Promise<User> {
     // Transform domain entity to MongoDB document
     const userDoc = new this.userModel({

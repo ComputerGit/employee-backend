@@ -8,6 +8,7 @@ import {
 } from './infrastructure/persistence/mongo/user.schema';
 import { UserMongoRepository } from './infrastructure/persistence/mongo/user.mongo.repository';
 import { EmployeeModule } from '../employee/employee.module';
+import { DeleteUserService } from './application/services/delete-user.service';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { EmployeeModule } from '../employee/employee.module';
   controllers: [UserController],
   providers: [
     UserService,
+    DeleteUserService,
     {
       provide: 'UserRepository',
       useClass: UserMongoRepository,

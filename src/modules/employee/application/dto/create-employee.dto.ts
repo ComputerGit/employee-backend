@@ -48,7 +48,7 @@ export class CreateEmployeeDto {
   @IsNotEmpty()
   lastName: string;
 
-  @IsEnum(['IT', 'HR', 'PMO', 'MANAGER'])
+  @IsEnum(['IT', 'HR', 'PMO', 'MANAGER', 'ADMIN', 'EMPLOYEE'])
   role: string;
 
   @IsArray()

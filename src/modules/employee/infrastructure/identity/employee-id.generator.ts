@@ -6,10 +6,22 @@ import { EmployeeSequenceRepository } from '../persistence/mongo/employee-sequen
 export class EmployeeIdGenerator {
   constructor(private readonly sequenceRepo: EmployeeSequenceRepository) {}
 
+  // Add logging to see what's happening
   async generate(countryCode: string): Promise<EmployeeId> {
-    console.log('sequenceRepo:', this.sequenceRepo);
-    const seq = await this.sequenceRepo.next();
-    const code = `EMP-${countryCode}-SE-${String(seq).padStart(6, '0')}`;
-    return EmployeeId.create(code);
+    try {
+      console.log('🔍 Generating employee ID for country:', countryCode);
+      console.log('🔍 sequenceRepo:', this.sequenceRepo);
+
+      const sequence = await this.sequenceRepo.next();
+      console.log('✅ Got sequence:', sequence);
+
+      const code = `EMP-${countryCode}-SE-${String(sequence).padStart(6, '0')}`;
+      console.log('✅ Generated code:', code);
+
+      return EmployeeId.create(code);
+    } catch (error) {
+      console.error('❌ ERROR in employee-id.generator:', error);
+      throw error;
+    }
   }
 }

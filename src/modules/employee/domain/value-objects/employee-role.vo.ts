@@ -3,6 +3,8 @@ export enum EmployeeRoleType {
   EMPLOYEE = 'EMPLOYEE',
   IT = 'IT',
   HR = 'HR',
+  PMO = 'PMO', // Add this (you had it in your DTO)
+  ADMIN = 'ADMIN', // Add this
 }
 
 export class EmployeeRole {
